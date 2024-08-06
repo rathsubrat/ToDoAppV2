@@ -602,3 +602,20 @@ class UserTaskNotification(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+
+
+class AssignTaskView(APIView):
+    def put(self, request, task_name, format=None):
+        # Get the task object
+        task = get_object_or_404(Task, taskName=task_name)
+
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return Response({'detail': 'Authentication credentials were not provided.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        # Update the task's assignedTo field
+        task.assignedTo = request.user
+        task.save()
+
+        return Response({'detail': 'Task updated successfully.'}, status=status.HTTP_200_OK)

@@ -86,6 +86,11 @@ class Task(models.Model):
                 if orig.task_progress>self.task_progress:
                     raise ValidationError("Task Progress Can not Decrease")
 
+        if self.task_wallet is not None and self.achieved_points is not None:
+            # Check if achieved_points is greater than task_wallet
+            if self.achieved_points > self.task_wallet:
+                raise ValidationError("Achieved Points cannot exceed Task Wallet value.")
+
         super(Task, self).save(*args, **kwargs)
 
     def __str__(self):
