@@ -43,8 +43,10 @@ urlpatterns = [
     path('user/tasks/<str:user_name>/', UserTaskView.as_view(), name='tasks_user'),#User Specific Tasks
     path('tasks/notification/<str:project_name>/', UserTaskNotification.as_view(), name='notification'),#if tasks assignedTo field is None then Highlight
     path('update-date/<int:pk>/', UpdateDateView.as_view(), name='update-date'),# Task Update Date
-    path('update_achieved_points/<int:card_id>/', update_achieved_points, name='update_achieved_points'),
-    path('update_mark_completed/<int:card_id>/', update_mark_completed, name='update_mark_completed'),
+    path('update_achieved_points/<int:card_id>/', update_achieved_points, name='update_achieved_points'),# Updte Achieved point
+    path('update_mark_completed/<int:card_id>/', update_mark_completed, name='update_mark_completed'),# Mark as Task Completed
+    path('update_mark_flagged/<int:card_id>/', update_mark_flagged, name='update_mark_flagged'),#mark Task as Flagged
+    path('approve_task/<int:card_id>/', approve_task, name='approve_task'),#Task Pending for approval
 
 ]
 if settings.DEBUG:
