@@ -619,3 +619,40 @@ class AssignTaskView(APIView):
         task.save()
 
         return Response({'detail': 'Task updated successfully.'}, status=status.HTTP_200_OK)
+# @login_required
+@manager_required
+@api_view(['PUT'])
+def update_achieved_points(request, card_id):
+    try:
+        task = Task.objects.get(id=card_id)
+    except Task.DoesNotExist:
+        return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    achieved_points = request.data.get('achieved_points')
+
+    try:
+        task.achieved_points = achieved_points
+        task.save()
+    except ValueError:
+        return Response({'error': 'STR and Alphanums Not Allowed'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = TaskSerializer(task)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+@login_required
+@api_view(['PUT'])
+def update_mark_completed(request, card_id):
+    try:
+        task = Task.objects.get(id=card_id)
+    except Task.DoesNotExist:
+        return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    is_completed = request.data.get('is_completed')
+
+    try:
+        task.is_completed = is_completed
+        task.save()
+    except ValueError:
+        return Response({'error': 'STR, Alphanums and Numbers are Not Allowed'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = TaskSerializer(task)
+    return Response(serializer.data, status=status.HTTP_200_OK)

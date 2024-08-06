@@ -43,7 +43,9 @@ urlpatterns = [
     path('user/tasks/<str:user_name>/', UserTaskView.as_view(), name='tasks_user'),#User Specific Tasks
     path('tasks/notification/<str:project_name>/', UserTaskNotification.as_view(), name='notification'),#if tasks assignedTo field is None then Highlight
     path('update-date/<int:pk>/', UpdateDateView.as_view(), name='update-date'),# Task Update Date
- 
+    path('update_achieved_points/<int:card_id>/', update_achieved_points, name='update_achieved_points'),
+    path('update_mark_completed/<int:card_id>/', update_mark_completed, name='update_mark_completed'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
