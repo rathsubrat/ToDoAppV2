@@ -589,3 +589,16 @@ class UpdateDateView(generics.UpdateAPIView):
     permission_classes = [AllowAny]
     queryset = Task.objects.all()
     serializer_class = MyModelSerializer
+
+class UserTaskNotification(APIView):
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, project_name, format=None):
+        project = get_object_or_404(Projects, name=project_name)
+        users = Task.objects.filter(project=project).values_list('assignedTo', flat=True).distinct()
+
+        if request.user.id in users:  # Check if request.user's ID is in the list of users
+            tasks = Task.objects.filter(Q(project=project) & Q(assignedTo=None))  # Filter tasks for the project with no assigned user
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)

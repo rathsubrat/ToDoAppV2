@@ -41,6 +41,7 @@ urlpatterns = [
     path('comment/tasks/<str:task_name>/', TaskMessagesView.as_view(), name='tasks_Comment'),#Comment App
     # path('comment/tasks/<int:task_id>/', TaskMessagesView.as_view(), name='tasks_Comment'),
     path('user/tasks/<str:user_name>/', UserTaskView.as_view(), name='tasks_user'),#User Specific Tasks
+    path('tasks/notification/<str:project_name>/', UserTaskNotification.as_view(), name='notification'),#if tasks assignedTo field is None then Highlight
     path('update-date/<int:pk>/', UpdateDateView.as_view(), name='update-date'),# Task Update Date
  
 ]
