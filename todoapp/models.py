@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User,Group
 from django.db.models import Count, JSONField
 from datetime import datetime
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Card(models.Model):
@@ -51,8 +52,9 @@ class Task(models.Model):
         default=Priority_Low,
     )
     checklist = models.TextField(default="Not Available",null=True, blank=True)
-    cover = models.CharField(max_length=100, default='#ffffff', null=True, blank = True)
+    cover = models.CharField(max_length=100, default='#ffff', null=True, blank = True)
     tech_stack = models.CharField(max_length=50, null=True, blank=True)
+    task_progress = models.IntegerField(default=0)
 
     # def __str__(self):
     #     return self.name
@@ -78,6 +80,11 @@ class Task(models.Model):
                 if (eta_date - today).days <= 2:
                     self.priority = self.Priority_High
                     break
+        if self.task_progress is not None:
+            if self.pk is not None:
+                orig = Task.objects.get(pk=self.pk)
+                if orig.task_progress>self.task_progress:
+                    raise ValidationError("Task Progress Can not Decrease")
 
         super(Task, self).save(*args, **kwargs)
 
@@ -122,4 +129,6 @@ class Message(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     message = models.TextField(max_length=5000)
     date_time = models.DateTimeField(auto_now_add=True)
+    is_flagged = models.BooleanField('flagged',default=False)
+    reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
  
