@@ -25,15 +25,15 @@ class Projects(models.Model):
     
     
 class Task(models.Model):
-    taskName = models.CharField(max_length=255,null=True, blank=True)
+    taskName = models.CharField(max_length=255)
     # status = models.CharField(max_length=50,null=True, blank=True) this used in version 1.0 for making simple text field
     taskStatus = models.ForeignKey(Card, on_delete=models.CASCADE)
-    assignedTo = models.ManyToManyField(User, related_name='tasks')
+    assignedTo = models.ManyToManyField(User, related_name='tasks',null=True,blank=True)
     assigned_groups = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE,null=True)
     description = models.CharField(max_length=100,null=True,blank=True)
     startdate = models.DateField(null=True, blank=True)
-    enddate = models.DateField(null=True, blank=True)
+    # enddate = models.DateField(null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
     file = models.FileField(max_length=100, upload_to="media/", null=True, blank=True)
     Priority_High = 'high'
@@ -55,12 +55,12 @@ class Task(models.Model):
     cover = models.CharField(max_length=100, default='#ffff', null=True, blank = True)
     tech_stack = models.CharField(max_length=50, null=True, blank=True)
     task_progress = models.IntegerField(default=0)
-
-    # def __str__(self):
-    #     return self.name
-
     task_wallet = models.IntegerField(null=True,blank=True)
     ETA = JSONField(default=list, null=True, blank=True)
+    achieved_points = models.IntegerField(null=True,blank=True)
+    is_completed = models.BooleanField('Completed',default=False)
+    is_flaged = models.BooleanField('Flaged', default=False)
+    approvals = models.BooleanField('Approved', default=False)
 
     def save(self, *args, **kwargs):
     # Check if done_date has changed
@@ -115,7 +115,7 @@ class UserProfile(models.Model):
         default='User'
     )
     assigned_project = models.ForeignKey(Projects, on_delete=models.CASCADE, null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+    # profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
     # def __str__(self):
     #    return self.user.username

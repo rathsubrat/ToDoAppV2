@@ -20,7 +20,7 @@ class AccountInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'Details'
-    fields = ('tech_stack', 'role', 'designation', 'assigned_project', 'profile_photo')
+    fields = ('tech_stack', 'role', 'designation', 'assigned_project')
 
 class CustomUserAdmin(UserAdmin):
     inlines = (AccountInline,)

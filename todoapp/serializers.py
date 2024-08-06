@@ -89,17 +89,17 @@ class UserProfileDesignationSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ['designation']
 
-class UserProfilePhotoSerializer(serializers.ModelSerializer):
-    profile_photo = serializers.ImageField(required=False)
-
-    class Meta:
-        model = UserProfile
-        fields = ['profile_photo']
+# class UserProfilePhotoSerializer(serializers.ModelSerializer):
+#     profile_photo = serializers.ImageField(required=False)
+#
+#     class Meta:
+#         model = UserProfile
+#         fields = ['profile_photo']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['tech_stack', 'role', 'designation', 'profile_photo']
+        fields = ['tech_stack', 'role', 'designation']
 
 class UserSerializer(serializers.ModelSerializer):
     userprofile = UserProfileSerializer()
