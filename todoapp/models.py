@@ -33,7 +33,7 @@ class Task(models.Model):
     project = models.ForeignKey(Projects, on_delete=models.CASCADE,null=True)
     description = models.CharField(max_length=100,null=True,blank=True)
     startdate = models.DateField(null=True, blank=True)
-    # enddate = models.DateField(null=True, blank=True)
+    enddate = models.DateField(null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
     file = models.FileField(max_length=100, upload_to="media/", null=True, blank=True)
     Priority_High = 'high'
