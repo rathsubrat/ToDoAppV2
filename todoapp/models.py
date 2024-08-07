@@ -18,7 +18,8 @@ class Projects(models.Model):
     # team = models.CharField(max_length=255)  
     # status = models.CharField(max_length=255)  
     status = models.ForeignKey(Card, on_delete=models.CASCADE,default = "")
-    manager = models.CharField(max_length=255, default="Default Manager")  
+    manager = models.CharField(max_length=255, default="Default Manager")
+    project_wallet = models.IntegerField()
 
     def __str__(self):
         return self.name
