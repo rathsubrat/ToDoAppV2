@@ -576,6 +576,8 @@ class TaskMessagesView(APIView):
         messages = Message.objects.filter(task=task)
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
  
  
 class UserTaskView(APIView):
@@ -691,6 +693,25 @@ def approve_task(request, card_id):
         task.save()
     except ValueError:
         return Response({'error': 'STR, Alphanums and Numbers are Not Allowed'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = TaskSerializer(task)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# @login_required
+@api_view(['PUT'])
+def task_progress(request, card_id):
+    try:
+        task = Task.objects.get(id=card_id)
+    except Task.DoesNotExist:
+        return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    task_progress = request.data.get('task_progress')
+
+    try:
+        task.task_progress = task_progress
+        task.save()
+    except ValueError:
+        return Response({'error': 'STR, Alphanums and Symbols are Not Allowed'}, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = TaskSerializer(task)
     return Response(serializer.data, status=status.HTTP_200_OK)
