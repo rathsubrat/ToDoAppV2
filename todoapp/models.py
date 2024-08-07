@@ -84,7 +84,7 @@ class Task(models.Model):
         if self.task_progress is not None:
             if self.pk is not None:
                 orig = Task.objects.get(pk=self.pk)
-                if orig.task_progress > self.task_progress:
+                if orig.task_progress > int(self.task_progress):
                     raise ValidationError("Task Progress Can not Decrease")
 
         if self.task_wallet is not None:

@@ -48,6 +48,7 @@ urlpatterns = [
     path('update_mark_flagged/<int:card_id>/', update_mark_flagged, name='update_mark_flagged'),#mark Task as Flagged
     path('approve_task/<int:card_id>/', approve_task, name='approve_task'),#Task Pending for approval
     path('task_progress/<int:card_id>/', task_progress, name='task_progress'),#task_progress
+    path('messages/', MessageCreateView.as_view(), name='message-create'),
 
 ]
 if settings.DEBUG:
