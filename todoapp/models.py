@@ -93,19 +93,24 @@ class Task(models.Model):
             if self.pk is not None:
                 orig = Task.objects.get(pk=self.pk)
                 if orig.task_progress > int(self.task_progress):
-                    raise ValidationError("Task Progress Can not Decrease")
+                    raise ValidationError("Task Progress Cannot Decrease")
 
                 progress_increase = int(self.task_progress) - orig.task_progress
                 if progress_increase > 0:
                     assigned_users = self.assignedTo.all()
-                    if assigned_users:
+                    if assigned_users.exists():
                         progress_per_user = progress_increase / assigned_users.count()
+                        today = datetime.now().date()
                         for user in assigned_users:
-                            ProgressDetail.objects.create(
+                            progress_detail, created = ProgressDetail.objects.get_or_create(
+                                date=today,
                                 username=user.username,
                                 task_name=self.taskName,
-                                progress_percentage=progress_per_user
+                                defaults={'progress_percentage': progress_per_user}
                             )
+                            if not created:
+                                progress_detail.progress_percentage += progress_per_user
+                                progress_detail.save()
 
         if self.task_wallet is not None:
             # Check if achieved_points is greater than task_wallet
