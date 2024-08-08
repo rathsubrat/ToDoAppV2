@@ -49,6 +49,7 @@ urlpatterns = [
     path('approve_task/<int:card_id>/', approve_task, name='approve_task'),#Task Pending for approval
     path('task_progress/<int:card_id>/', task_progress, name='task_progress'),#task_progress
     path('messages/', MessageCreateView.as_view(), name='message-create'),
+    path('progress_data/<str:user_name>/', UserProgressDetail.as_view(), name='progress_details')
 
 ]
 if settings.DEBUG:

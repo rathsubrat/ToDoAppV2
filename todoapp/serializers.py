@@ -6,7 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-from .models import Task, User, Card, Projects, Message
+from .models import Task, User, Card, Projects, Message,ProgressDetail
 from django.utils import timezone
 
 
@@ -386,5 +386,12 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
+        fields = "__all__"
+
+class ProgressSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = ProgressDetail
         fields = "__all__"
  

@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from todoapp.serializers import *
 from django.contrib.auth.decorators import login_required, user_passes_test
-from todoapp.models import Task,Card
+from todoapp.models import *
 from .utils import save_project_data_as_text
 from .decorators import manager_required
 from rest_framework import permissions
@@ -723,3 +723,15 @@ class MessageCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class UserProgressDetail(APIView):
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, user_name, format=None):
+        user = get_object_or_404(User, username=user_name)
+        Progress_detail = ProgressDetail.objects.filter(username=user)
+        serializer = ProgressSerializer(Progress_detail, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
