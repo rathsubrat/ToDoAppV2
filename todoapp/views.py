@@ -640,7 +640,7 @@ def update_achieved_points(request, card_id):
 
     serializer = TaskSerializer(task)
     return Response(serializer.data, status=status.HTTP_200_OK)
-@login_required
+# @login_required
 @api_view(['PUT'])
 def update_mark_completed(request, card_id):
     try:
@@ -697,7 +697,7 @@ def approve_task(request, card_id):
     serializer = TaskSerializer(task)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-# @login_required
+@login_required
 @api_view(['PUT'])
 def task_progress(request, card_id):
     try:
