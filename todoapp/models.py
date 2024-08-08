@@ -20,6 +20,18 @@ class Projects(models.Model):
     status = models.ForeignKey(Card, on_delete=models.CASCADE,default = "")
     manager = models.CharField(max_length=255, default="Default Manager")
     project_wallet = models.IntegerField()
+    ETA = JSONField(default=list, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Check if done_date has changed
+        if self.pk is not None:
+            orig = Projects.objects.get(pk=self.pk)
+            if orig.deadline != self.deadline:
+                if self.ETA is None:
+                    self.ETA = []
+                # Append the new done_date as a string
+                self.ETA.append(self.deadline.strftime("%Y-%m-%d"))
+        super(Projects, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
