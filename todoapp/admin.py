@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Card, UserProfile, Projects, Message
+from .models import Task, Card, UserProfile, Projects, Message,ProgressDetail
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -44,3 +44,4 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ['id','user','message']
 
 admin.site.register(Message,MessageAdmin)
+admin.site.register(ProgressDetail)

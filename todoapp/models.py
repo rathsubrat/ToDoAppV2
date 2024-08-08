@@ -23,13 +23,20 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.name
+class ProgressDetail(models.Model):
+    date = models.DateField(auto_now_add=True)
+    username = models.CharField(max_length=150)
+    task_name = models.CharField(max_length=255)
+    progress_percentage = models.FloatField()
+
+    def __str__(self):
+        return f"{self.date} - {self.username} - {self.task_name} - {self.progress_percentage}%"
     
     
 class Task(models.Model):
     taskName = models.CharField(max_length=255)
-    # status = models.CharField(max_length=50,null=True, blank=True) this used in version 1.0 for making simple text field
     taskStatus = models.ForeignKey(Card, on_delete=models.CASCADE)
-    assignedTo = models.ManyToManyField(User, related_name='tasks',null=True,blank=True)
+    assignedTo = models.ManyToManyField(User, related_name='tasks',blank=True)
     assigned_groups = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE,null=True)
     description = models.CharField(max_length=100,null=True,blank=True)
@@ -58,7 +65,7 @@ class Task(models.Model):
     task_progress = models.IntegerField(default=0)
     task_wallet = models.IntegerField(null=True,blank=True)
     ETA = JSONField(default=list, null=True, blank=True)
-    achieved_points = models.IntegerField(null=True,blank=True)
+    achieved_points = models.IntegerField(null=True,blank=True,default=0)
     is_completed = models.BooleanField('Completed',default=False)
     is_flaged = models.BooleanField('Flaged', default=False)
     approvals = models.BooleanField('Approved', default=False)
@@ -81,11 +88,24 @@ class Task(models.Model):
                 if (eta_date - today).days <= 2:
                     self.priority = self.Priority_High
                     break
+
         if self.task_progress is not None:
             if self.pk is not None:
                 orig = Task.objects.get(pk=self.pk)
                 if orig.task_progress > int(self.task_progress):
                     raise ValidationError("Task Progress Can not Decrease")
+
+                progress_increase = int(self.task_progress) - orig.task_progress
+                if progress_increase > 0:
+                    assigned_users = self.assignedTo.all()
+                    if assigned_users:
+                        progress_per_user = progress_increase / assigned_users.count()
+                        for user in assigned_users:
+                            ProgressDetail.objects.create(
+                                username=user.username,
+                                task_name=self.taskName,
+                                progress_percentage=progress_per_user
+                            )
 
         if self.task_wallet is not None:
             # Check if achieved_points is greater than task_wallet
@@ -103,7 +123,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     tech_stack = models.CharField(max_length=50, null=True, blank=True)
     role = models.CharField(
-        max_length=50, null=True,
+        max_length=50, null=True,blank=True,
         choices=[
             ('UI/UX Designer', 'UI/UX Designer'),
             ('Backend Developer', 'Backend Developer'),
@@ -112,7 +132,7 @@ class UserProfile(models.Model):
         ]
     )
     designation = models.CharField(
-        max_length=50,
+        max_length=50,null=True,blank=True,
         choices=[
             ('User', 'User'),
             ('Super User', 'Super User'),
