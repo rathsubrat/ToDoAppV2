@@ -735,3 +735,23 @@ class UserProgressDetail(APIView):
         serializer = ProgressSerializer(Progress_detail, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# @login_required
+@api_view(['PUT'])
+def update_message_flagged(request, card_id):
+    try:
+        msg = Message.objects.get(id=card_id)
+    except Task.DoesNotExist:
+        return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    is_flagged = request.data.get('is_flagged')
+
+    try:
+        msg.is_flagged = is_flagged
+        msg.save()
+    except ValueError:
+        return Response({'error': 'STR, Alphanums and Numbers are Not Allowed'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = MessageSerializer(msg)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
