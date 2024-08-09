@@ -75,7 +75,7 @@ class Task(models.Model):
     cover = models.CharField(max_length=100, default='#ffff', null=True, blank = True)
     tech_stack = models.CharField(max_length=50, null=True, blank=True)
     task_progress = models.IntegerField(default=0)
-    task_wallet = models.IntegerField(null=True,blank=True)
+    task_wallet = models.IntegerField(null=True,blank=True,default=0)
     ETA = JSONField(default=list, null=True, blank=True)
     achieved_points = models.IntegerField(null=True,blank=True,default=0)
     is_completed = models.BooleanField('Completed',default=False)
@@ -101,30 +101,30 @@ class Task(models.Model):
                     self.priority = self.Priority_High
                     break
 
-        if self.task_progress is not None:
-            if self.pk is not None:
-                orig = Task.objects.get(pk=self.pk)
-                if orig.task_progress > int(self.task_progress):
-                    raise ValidationError("Task Progress Cannot Decrease")
+        # if self.task_progress is not None:
+        #     if self.pk is not None:
+        #         orig = Task.objects.get(pk=self.pk)
+        #         if orig.task_progress > int(self.task_progress):
+        #             raise ValidationError("Task Progress Cannot Decrease")
+        #
+        #         progress_increase = int(self.task_progress) - orig.task_progress
+        #         if progress_increase > 0:
+        #             assigned_users = self.assignedTo.all()
+        #             if assigned_users.exists():
+        #                 progress_per_user = progress_increase / assigned_users.count()
+        #                 today = datetime.now().date()
+        #                 for user in assigned_users:
+        #                     progress_detail, created = ProgressDetail.objects.get_or_create(
+        #                         date=today,
+        #                         username=user.username,
+        #                         task_name=self.taskName,
+        #                         defaults={'progress_percentage': progress_per_user}
+        #                     )
+        #                     if not created:
+        #                         progress_detail.progress_percentage += progress_per_user
+        #                         progress_detail.save()
 
-                progress_increase = int(self.task_progress) - orig.task_progress
-                if progress_increase > 0:
-                    assigned_users = self.assignedTo.all()
-                    if assigned_users.exists():
-                        progress_per_user = progress_increase / assigned_users.count()
-                        today = datetime.now().date()
-                        for user in assigned_users:
-                            progress_detail, created = ProgressDetail.objects.get_or_create(
-                                date=today,
-                                username=user.username,
-                                task_name=self.taskName,
-                                defaults={'progress_percentage': progress_per_user}
-                            )
-                            if not created:
-                                progress_detail.progress_percentage += progress_per_user
-                                progress_detail.save()
-
-        if self.task_wallet is not None:
+        if self.pk:
             # Check if achieved_points is greater than task_wallet
             orig = Task.objects.get(pk = self.pk)
             if int(self.achieved_points) > orig.task_wallet:
