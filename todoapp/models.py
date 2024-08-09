@@ -169,7 +169,7 @@ class UserProfile(models.Model):
     # current_status = models.CharField(max_length=30, default='Not Started')
 
 class Message(models.Model):
-    task = models.ForeignKey(Task,on_delete=models.CASCADE)
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,related_name='messages')
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     message = models.TextField(max_length=5000)
     date_time = models.DateTimeField(auto_now_add=True)
